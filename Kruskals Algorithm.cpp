@@ -1,18 +1,37 @@
 #include<iostream>
 using namespace std;
 
-//You were here
-/*int findset(struct Temp, int u)
+struct Edge
 {
-	Temp *S1;
+	int src, dest, cost;
+};
+
+struct Result
+{
+	int src, dest, cost;
+};
+
+struct Graph
+{
+	int V,E;
+	struct Edge *edge;
+};
+
+struct Subset
+{
+	int Parent;
+	int Rank;
+};
+
+int findset(struct Subset *S1, int u)
+{
 	if(S1[u].Parent == u)
 		return u;
 	return findset(S1,S1[u].Parent);	
 }
 
-void Union(struct Temp, int u, int v)
+void Union(struct Subset *S1, int u, int v)
 {
-	Temp *S1;
 	int xcode = findset(S1,u);
 	int ycode = findset(S1,v);
 	
@@ -29,69 +48,64 @@ void Union(struct Temp, int u, int v)
 	{
 		S1[xcode].Parent = ycode;
 	}
-}*/
-
-struct Subset
-{
-	int Parent;
-	int Rank;
-};
-
-struct Graph
-{
-	int V,E;
-	Graph *Edge;
-};
-
-struct Edge
-{
-	int src, dest, cost;
-};
-
-struct Result
-{
-	int src, dest, cost;
-};
+}
 
 int main()
 {
-	int i,MST_wt = 0;
+	int i,count=0,MST_wt = 0;
 	
 	Subset *S;
-	Graph *gph;
-	Edge *edge;
+	Graph *gph = new Graph;
 	Result *Res;
 	
 	cout<<"Enter the number of vertices in graph: ";
 	cin>>gph->V;
 	cout<<"Enter the number of edges in graph: ";
 	cin>>gph->E;
-	for(i=0;i<(gph->E)-1;i++)
+	
+	S = new Subset[gph->V];
+	gph->edge = new Edge[gph->E];
+	Res = new Result[(gph->V)-1];
+	
+	for(i=0;i<gph->E;i++)
 	{
-		cout<<"Enter source of edge "<<i<<": ";
-		cin>>edge[i].src;
+		cout<<"\nEnter source of edge "<<i<<": ";
+		cin>>gph->edge[i].src;
 		cout<<"Enter destination of edge "<<i<<": ";
-		cin>>edge[i].dest;
-		cout<<"Enter cost of edge "<<edge[i].src<<"--"<<edge[i].dest<<" = ";
-		cin>>edge[i].cost;
+		cin>>gph->edge[i].dest;
+		cout<<"Enter cost of edge "<<gph->edge[i].src<<"--"<<gph->edge[i].dest<<" = ";
+		cin>>gph->edge[i].cost;
 	}
 
-	for(i=0;i<(gph->V)-1;i++)
+	for(i=0;i<gph->V;i++)
 	{
 		S[i].Parent = i;
 		S[i].Rank = 0;
 	}
 	
-	i=0;
-/*	while(findset(S,edge[i].src) != findset(S,edge[i].dest))
+	for(i=0;i<gph->E;i++)
 	{
-		Res[i].src = edge[i].src;
-		Res[i].dest = edge[i].dest;
-		Res[i].cost = edge[i].cost;
-		MST_wt = MST_wt + Res[i].cost;
-		Union(S,Res[i].src,Res[i].dest);
-		i++; 
-	}*/
+		if(findset(S,gph->edge[i].src) != findset(S,gph->edge[i].dest))
+		{
+			Res[count].src = gph->edge[i].src;
+			Res[count].dest = gph->edge[i].dest;
+			Res[count].cost = gph->edge[i].cost;
+			MST_wt = MST_wt + Res[count].cost;
+			Union(S,Res[count].src,Res[count].dest);
+			count++;
+		}
+	}
+	
+	cout<<"\nThe resultant structure is: \n";
+	for(i=0;i<count;i++)
+	{
+		cout<<"  | "<<Res[i].src<<" | ";
+		cout<<Res[i].dest<<" | ";
+		cout<<Res[i].cost<<" |";
+		cout<<endl;
+	}
+	
+	cout<<"Weight of minimum spanning tree is "<<MST_wt;
 	
 	return 0;
 }

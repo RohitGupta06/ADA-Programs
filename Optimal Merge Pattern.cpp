@@ -8,11 +8,17 @@ struct Tree
 	Tree *Right;
 };
 
+struct List
+{
+	Tree *Root;
+	List *Next;
+};
+
 class Linked_list
 {
 	private:
-		Tree *head;
-		Tree *tail;	
+		List *head;
+		List *tail;	
 	public:
 		Linked_list()
 		{
@@ -23,6 +29,7 @@ class Linked_list
 		void insert(Tree *);
 		void display();
 		int sum();
+		void display_Tree();
 };
 
 void Linked_list::getnode()
@@ -38,44 +45,57 @@ void Linked_list::insert(Tree *node)
 {
 	if(head == NULL)
 	{
-		head = node;
-		tail = node;
+		List *Newn = new List;
+		Newn->Root = node;
+		head = Newn;
+		tail = Newn;
 	}
-	else if(node->Length <= head->Length)
+	else if(node->Length <= head->Root->Length)
 	{
-		node->Right = head;
-		head->left = node;
-		head = node;
+		List *Newn = new List;
+		Newn->Next = head;
+		Newn->Root = node;
+		head = Newn;
 	}
-	else if(node->Length >=tail->Length)
+	else if(node->Length >= tail->Root->Length)
 	{
-		tail->Right = node;
-		node->left = tail;
-		tail = node;
+		List *Newn = new List;
+		tail->Next = Newn;
+		Newn->Root = node;
+		tail = Newn;
 	}
 	else
 	{
-		Tree *Temp;
+		List *Temp;
 		Temp = head;
-		while(Temp->Length <= node->Length)
+		int count = 0;
+		while(Temp->Root->Length <= node->Length)
 		{
-			Temp = Temp->Right;
+			Temp = Temp->Next;
+			count++;
 		}
-		node->Right = Temp;
-		node->left = Temp->left;
-		Temp->left->Right = node;
-		Temp->left = node;
+		
+		List *Newn = new List;
+		Newn->Next = Temp;
+		Newn->Root = node;
+		
+		Temp = head;
+		while(--count != 0)
+		{
+			Temp = Temp->Next;
+		}
+		Temp->Next = Newn;
 	}
 }
 
 void Linked_list::display()
 {
-	Tree *Temp;
+	List *Temp;
 	Temp = head;
 	while(Temp != NULL)
 	{
-		cout<<Temp->Length<<" ";
-		Temp = Temp->Right;
+		cout<<Temp->Root->Length<<" ";
+		Temp = Temp->Next;
 	}
 }
 
@@ -89,26 +109,42 @@ int Linked_list::sum()
 		Tree *Temp = new Tree;
 		Temp->left = NULL;
 		Temp->Right = NULL;
-		Temp->Length = head->Length + head->Right->Length;
+		Temp->Length = head->Root->Length + head->Next->Root->Length;
 		
-		if(head->Right->Right == NULL)
+		if(head->Next->Next == NULL)
 		{
-			head = Temp;
-			tail = Temp;
+			Temp->left = head->Root;
+			head = head->Next;
+			Temp->Right = head->Root;
+			head->Root = Temp;
+			tail->Root = Temp;
 		}
 		else
 		{
-			Tree *demo = head;
-			head = demo->Right->Right;
-			head->left = NULL;
+			List *demo = head;
+			Temp->left = head->Root;
+			head = head->Next;
+			Temp->Right = head->Root;
+			head = head->Next;
 			insert(Temp);
 		}
-		
-		display();
-		cout<<endl<<endl;
 		sum();
 	}
 }
+
+void Linked_list::display_Tree()
+{
+	cout<<head->Root->Length<<" ";
+	cout<<head->Root->left->Length<<" ";
+	cout<<head->Root->Right->Length<<" ";
+	cout<<head->Root->Right->left->Length<<" ";
+	cout<<head->Root->Right->Right->Length<<" ";
+	cout<<head->Root->Right->Right->left->Length<<" ";
+	cout<<head->Root->Right->Right->Right->Length<<" ";
+	cout<<head->Root->Right->Right->left->left->Length<<" ";
+	cout<<head->Root->Right->Right->left->Right->Length<<" ";
+}
+
 int main()
 {
 	Linked_list obj;
@@ -124,7 +160,8 @@ int main()
 	cout<<endl;
 	obj.display();
 	cout<<endl;
-	cout<<"Changes occuring in list...\n";
+	cout<<"The Tree formed is...\n";
 	obj.sum();
+	obj.display_Tree();
 	return 0;
 }
