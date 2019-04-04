@@ -89,7 +89,7 @@ int main()
 		{
 			Res[count].src = gph->edge[i].src;
 			Res[count].dest = gph->edge[i].dest;
-			Res[count].cost = gph->edge[i].cost;
+			Res[count].cost = gph->edge[i].cost;-
 			MST_wt = MST_wt + Res[count].cost;
 			Union(S,Res[count].src,Res[count].dest);
 			count++;
