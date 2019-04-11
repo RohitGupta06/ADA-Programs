@@ -56,10 +56,7 @@ int main()
 {
 	int i,j,max=0;
 	int X[V];
-	/*cout<<"Enter the number of vertices: ";
-	cin>>V;
-	int Adj[V][V];
-	cout<<"Enter the adjacency matrix:\n";*/
+	
 	for(i=0;i<V;i++)
 	{
 		int count = 0;
